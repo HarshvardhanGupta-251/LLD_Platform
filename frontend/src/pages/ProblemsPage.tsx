@@ -79,7 +79,7 @@ export const ProblemsPage: React.FC<ProblemsPageProps> = ({ onSelectProblem }) =
       </section>
 
       {/* ─── Problems Grid ─── */}
-      <section id="problems-grid" className="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-24">
+      <section id="problems-grid" className="w-full px-4 sm:px-6 lg:px-8 pb-24">
         {loading && (
           <div className="flex flex-col items-center justify-center min-h-[40vh] gap-3 text-slate-400">
             <RefreshCw className="w-8 h-8 animate-spin text-slate-400" />
@@ -100,15 +100,16 @@ export const ProblemsPage: React.FC<ProblemsPageProps> = ({ onSelectProblem }) =
               Problem Catalog &mdash; {problems.length} challenges
             </p>
 
-            {/* Responsive card grid — PixelCard has fixed aspect-ratio 4/5 */}
-            <div className="flex flex-wrap justify-center gap-6">
+            {/* Single-row horizontal strip — all cards in one line */}
+            <div className="flex flex-nowrap justify-center gap-5 overflow-x-auto pb-2"
+              style={{ scrollbarWidth: 'none' }}>
               {problems.map((problem) => (
                 <PixelCard
                   key={problem.id}
                   variant={variantForDifficulty(problem.difficulty)}
-                  className="cursor-pointer"
+                  className="cursor-pointer shrink-0"
                   style={{
-                    width: 'clamp(260px, 30%, 320px)',
+                    width: `min(260px, calc((100vw - 5rem) / ${Math.max(problems.length, 1)}))`,
                     height: 'auto',
                     aspectRatio: '4/5',
                   }}

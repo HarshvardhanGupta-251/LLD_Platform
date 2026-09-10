@@ -15,14 +15,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onSelectTab }) => {
           onClick={() => onSelectTab('problems')}
           className="flex items-center gap-2.5 shrink-0 group"
         >
-          {/* Icon mark */}
-          <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center shadow-sm">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M3 8 L8 3 L13 8 L8 13 Z" fill="#111118" />
-              <circle cx="8" cy="8" r="2" fill="white" />
-            </svg>
-          </div>
-          <span className="text-sm font-semibold text-white tracking-tight">ArchLab LLD</span>
+          <img
+            src="/logo.jpg"
+            alt="LLD_Platform logo"
+            className="w-7 h-7 rounded-lg object-cover"
+          />
+          <span className="text-sm font-semibold text-white tracking-tight">LLD_Platform</span>
         </button>
 
         {/* Nav links */}
@@ -39,9 +37,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onSelectTab }) => {
           >
             History
           </button>
-          <span className="px-4 py-1.5 text-sm text-slate-500 font-medium cursor-default">
+          <a
+            href="https://github.com/HarshvardhanGupta-251"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-1.5 text-sm text-slate-300 hover:text-white transition-colors rounded-xl hover:bg-white/5 font-medium"
+          >
             About
-          </span>
+          </a>
         </div>
 
         {/* CTA */}
