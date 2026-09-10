@@ -2,10 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { Problem } from '../types';
 import { api } from '../services/api';
 import { ArrowRight, Tag, RefreshCw } from 'lucide-react';
+import PixelCard from '../components/PixelCard';
 
 interface ProblemsPageProps {
   onSelectProblem: (problem: Problem) => void;
 }
+
+// Pick a PixelCard variant per difficulty
+const variantForDifficulty = (diff: string): 'blue' | 'yellow' | 'pink' | 'default' => {
+  if (diff === 'Hard') return 'pink';
+  if (diff === 'Medium') return 'yellow';
+  return 'blue';
+};
+
+const difficultyLabel = (diff: string) => {
+  if (diff === 'Hard') return 'text-rose-400 border-rose-500/40 bg-rose-500/10';
+  if (diff === 'Medium') return 'text-amber-400 border-amber-500/40 bg-amber-500/10';
+  return 'text-sky-400 border-sky-500/40 bg-sky-500/10';
+};
 
 export const ProblemsPage: React.FC<ProblemsPageProps> = ({ onSelectProblem }) => {
   const [problems, setProblems] = useState<Problem[]>([]);
@@ -24,12 +38,6 @@ export const ProblemsPage: React.FC<ProblemsPageProps> = ({ onSelectProblem }) =
         setLoading(false);
       });
   }, []);
-
-  const getDifficultyBadge = (diff: string) => {
-    if (diff === 'Hard') return 'bg-rose-500/15 text-rose-400 border-rose-500/30';
-    if (diff === 'Medium') return 'bg-amber-500/15 text-amber-400 border-amber-500/30';
-    return 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30';
-  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -71,7 +79,7 @@ export const ProblemsPage: React.FC<ProblemsPageProps> = ({ onSelectProblem }) =
       </section>
 
       {/* ─── Problems Grid ─── */}
-      <section id="problems-grid" className="max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-20">
+      <section id="problems-grid" className="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-24">
         {loading && (
           <div className="flex flex-col items-center justify-center min-h-[40vh] gap-3 text-slate-400">
             <RefreshCw className="w-8 h-8 animate-spin text-slate-400" />
@@ -88,60 +96,71 @@ export const ProblemsPage: React.FC<ProblemsPageProps> = ({ onSelectProblem }) =
 
         {!loading && !error && (
           <>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest">
-                Problem Catalog
-                <span className="ml-2 text-slate-600">({problems.length})</span>
-              </h2>
-            </div>
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-8 text-center">
+              Problem Catalog &mdash; {problems.length} challenges
+            </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Responsive card grid — PixelCard has fixed aspect-ratio 4/5 */}
+            <div className="flex flex-wrap justify-center gap-6">
               {problems.map((problem) => (
-                <div
+                <PixelCard
                   key={problem.id}
-                  className="group rounded-2xl p-6 bg-white/[0.04] border border-white/[0.07] hover:border-white/20 hover:bg-white/[0.07] transition-all duration-200 flex flex-col justify-between gap-4 backdrop-blur-sm cursor-pointer"
-                  onClick={() => onSelectProblem(problem)}
+                  variant={variantForDifficulty(problem.difficulty)}
+                  className="cursor-pointer"
+                  style={{
+                    width: 'clamp(260px, 30%, 320px)',
+                    height: 'auto',
+                    aspectRatio: '4/5',
+                  }}
                 >
-                  <div className="space-y-3">
-                    <div className="flex items-start justify-between gap-3">
-                      <h3 className="text-base font-bold text-white group-hover:text-slate-100 leading-snug">
-                        {problem.title}
-                      </h3>
+                  {/* Content — must be position: absolute per PixelCard spec */}
+                  <div className="absolute inset-0 flex flex-col justify-between p-6 z-10">
+                    {/* Top section */}
+                    <div className="space-y-3">
+                      {/* Difficulty badge */}
                       <span
-                        className={`shrink-0 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${getDifficultyBadge(problem.difficulty)}`}
+                        className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${difficultyLabel(problem.difficulty)}`}
                       >
                         {problem.difficulty}
                       </span>
+
+                      {/* Title */}
+                      <h3 className="text-lg font-bold text-white leading-snug">
+                        {problem.title}
+                      </h3>
+
+                      {/* Description */}
+                      <p className="text-xs text-slate-400 line-clamp-4 leading-relaxed">
+                        {problem.description}
+                      </p>
                     </div>
 
-                    <p className="text-xs text-slate-500 line-clamp-3 leading-relaxed">
-                      {problem.description}
-                    </p>
-
-                    <div className="flex flex-wrap gap-1.5 pt-1">
-                      {problem.tags.map((tag, idx) => (
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-1.5">
+                      {problem.tags.slice(0, 3).map((tag, idx) => (
                         <span
                           key={idx}
-                          className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-white/5 text-slate-400 border border-white/8 text-[11px]"
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/5 text-slate-400 border border-white/8 text-[10px]"
                         >
-                          <Tag className="w-2.5 h-2.5 text-slate-500" />
+                          <Tag className="w-2.5 h-2.5 shrink-0" />
                           {tag}
                         </span>
                       ))}
                     </div>
-                  </div>
 
-                  <div className="pt-4 border-t border-white/[0.06] flex items-center justify-between">
-                    <span className="text-[11px] text-slate-600 font-mono">8-Criterion AI Rubric</span>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); onSelectProblem(problem); }}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold text-xs transition-all group-hover:gap-2"
-                    >
-                      Practice
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
+                    {/* Footer */}
+                    <div className="pt-3 border-t border-white/[0.07] flex items-center justify-between">
+                      <span className="text-[10px] text-slate-600 font-mono">8-Criterion AI Rubric</span>
+                      <button
+                        onClick={() => onSelectProblem(problem)}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold text-xs transition-all"
+                      >
+                        Practice
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
-                </div>
+                </PixelCard>
               ))}
             </div>
           </>
