@@ -1,6 +1,9 @@
 import { Problem, Attempt, Submission, Evaluation } from '../types';
 
-const API_BASE = '/api';
+const ENV_URL = (import.meta.env.VITE_API_URL as string | undefined)?.trim();
+const API_BASE = ENV_URL
+  ? (ENV_URL.endsWith('/api') ? ENV_URL : `${ENV_URL.replace(/\/$/, '')}/api`)
+  : '/api';
 
 async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${url}`, {
