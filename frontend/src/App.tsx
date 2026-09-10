@@ -5,6 +5,7 @@ import { ProblemsPage } from './pages/ProblemsPage';
 import { ProblemDetailPage } from './pages/ProblemDetailPage';
 import { HistoryPage } from './pages/HistoryPage';
 import PixelSnow from './components/PixelSnow';
+import { GridScan } from './components/GridScan';
 
 export const App: React.FC = () => {
   const [currentTab, setCurrentTab] = useState<'problems' | 'history' | 'practice'>('problems');
@@ -24,8 +25,28 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen text-slate-100 flex flex-col font-sans relative overflow-x-hidden" style={{ backgroundColor: '#0d0d14' }}>
-      {/* React Bits PixelSnow WebGL Background */}
+      {/* React Bits GridScan WebGL Background — perspective grid + scan beam */}
       <div className="fixed inset-0 pointer-events-none z-0">
+        <GridScan
+          sensitivity={0.55}
+          lineThickness={1}
+          linesColor="#000000"
+          gridScale={0.1}
+          scanColor="#333eb3"
+          scanOpacity={0.4}
+          enablePost
+          bloomIntensity={0.6}
+          chromaticAberration={0.006}
+          noiseIntensity={0.01}
+          scanGlow={1.1}
+          scanDirection="pingpong"
+          scanDuration={2.0}
+          scanDelay={2.0}
+        />
+      </div>
+
+      {/* React Bits PixelSnow WebGL Background — particle snow layer */}
+      <div className="fixed inset-0 pointer-events-none z-[1]">
         <PixelSnow
           color="#ffffffff"
           flakeSize={0.005}
