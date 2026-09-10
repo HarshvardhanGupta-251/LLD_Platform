@@ -33,18 +33,21 @@ Powered by **Google Gemini 2.5 Flash** and deterministic rule rubrics, the platf
 ## 📑 Table of Contents
 
 - [Live Deployments](#-live-production-deployments)
-- [Technical Documentation (PDFs)](#-technical-documentation--publications)
+- [Technical Documentation & AI Report](#-technical-documentation--publications)
 - [Overview](#-overview)
 - [Key Features](#-key-features)
 - [8-Criterion Architectural Rubric](#-8-criterion-architectural-rubric)
 - [System Architecture & Design Patterns](#-system-architecture--design-patterns)
+- [Key Architectural & Engineering Decisions](#-key-architectural--engineering-decisions)
+- [Current System Limitations & Future Scope](#-current-system-limitations--future-scope)
+- [🤖 AI Usage Report](#-ai-usage-report)
 - [Data Model & Entity Relationships](#-data-model--entity-relationships)
 - [Tech Stack](#-tech-stack)
 - [Problem Catalog](#-problem-catalog)
 - [Project Directory Structure](#-project-directory-structure)
 - [API Reference](#-api-reference)
 - [Cloud Deployment Guide](#-cloud-deployment-guide)
-- [Getting Started (Local Development)](#-getting-started-local-development)
+- [How to Run the Project (Local Development)](#-how-to-run-the-project-local-development)
 - [Testing & Quality Assurance](#-testing--quality-assurance)
 - [Author & Contact](#-author--contact)
 
@@ -56,6 +59,7 @@ The project includes formal, publication-grade documentation for academic, pedag
 
 | Document | Format | Description |
 |---|---|---|
+| **AI Usage Report** | [Markdown](AI_USAGE.md) | Transparent, formal disclosure of AI models used (Gemini 2.5 Flash, Antigravity, Claude), prompt engineering calibration, AST verification, and ethical development lifecycle. |
 | **Research Note** | [PDF](Research_Note.pdf) • [HTML](Research_Note.html) | Formal 4-page academic whitepaper detailing the automated architectural evaluation engine, the 8-criterion rubric, AST lexical scanning, Gemini 2.5 Flash schema enforcement, empirical benchmarks, and regression analysis. |
 | **Design Note** | [PDF](Design_Note.pdf) • [HTML](Design_Note.html) | Comprehensive 4-page software architecture design document detailing MVP scope, 8-stage end-to-end user flows, Prisma entity models, backend service hierarchies, and 6 core engineering trade-offs. |
 
@@ -197,6 +201,62 @@ flowchart TD
 4. **Idempotency Pattern**: Submissions accept an `idempotencyKey` to guarantee that network retries or repeated button presses do not create duplicate evaluation runs or corrupt history.
 5. **Repository / ORM Pattern**: Prisma client abstracts all database queries with type safety, cascades, and migrations.
 6. **Submission Immutability**: Submissions are strictly write-once; historical records cannot be overwritten post-creation.
+
+---
+
+## ⚖️ Key Architectural & Engineering Decisions
+
+Building the platform required evaluating critical trade-offs between speed, cost, reliability, developer velocity, and production scalability. Below is a summary of the core engineering choices:
+
+### 1. Relational Database (Prisma + SQLite/Postgres) vs. NoSQL Document Store
+- **Decision:** Relational schema managed via Prisma ORM (SQLite for development, PostgreSQL/Neon for production).
+- **Rationale:** Strict foreign keys with cascading deletions (`onDelete: Cascade`) guarantee that purging attempts removes all submissions, evaluations, and criterion scores without orphaned data. Auto-generated TypeScript types ensure zero runtime schema mismatch.
+
+### 2. Asynchronous HTTP Polling vs. WebSockets / SSE
+- **Decision:** Client-driven HTTP status polling (`/api/attempts/:id/evaluation-status`) bounded by a Finite State Machine.
+- **Rationale:** Serverless and edge hosting platforms (Render free tier, Vercel edge functions) disconnect persistent WebSocket TCP connections during cold starts or spin-downs. HTTP polling with persisted state is immune to transient mobile network drops and avoids sticky-session socket overhead.
+
+### 3. Pluggable Evaluator Engine (Strategy + Factory)
+- **Decision:** Decoupled `Evaluator` interface supporting `AIEvaluator` (Gemini 2.5 Flash), `RuleBasedEvaluator` (AST token analysis), and `HybridEvaluator`.
+- **Rationale:** Enables instant, zero-cost offline evaluations when API keys are absent, while allowing seamless transitions to state-of-the-art LLMs with JSON schema enforcement when credentials are present.
+
+### 4. Client-Side Diff Computation vs. Server-Side Diffing
+- **Decision:** Client-side textual diff computation using Longest Common Subsequence (LCS) algorithms in `RetryDiffView`.
+- **Rationale:** Offloads compute-heavy string comparisons from the Node.js backend to the client browser, providing instantaneous tab switching between Side-by-Side and Unified views with dynamic character-level diff highlighting.
+
+### 5. Single-File Markdown + Code Workspace vs. Multi-File Virtual IDE
+- **Decision:** Unified Markdown and code submission editor.
+- **Rationale:** Low-Level Design interviews test class decomposition, interface segregation, and design patterns—not bundler configurations or build scripts. Interweaving design narratives, diagrams, and class skeletons in one unified document guarantees atomic LLM context ingestion without complex multi-file AST graph parsing.
+
+---
+
+## ⚠️ Current System Limitations & Future Scope
+
+While the MVP delivers high-fidelity architectural evaluation, the following known limitations are actively tracked for subsequent releases:
+
+| # | Current Limitation | Impact | Mitigation / Future Roadmap |
+|---|---|---|---|
+| **1** | **Ephemeral Local Storage on Free Cloud Tiers** | Deployments on free-tier container providers (e.g., Render) wipe SQLite disk files upon cold restart. | **Mitigation:** Migrated production connection string to Neon Serverless PostgreSQL with permanent connection pooling. |
+| **2** | **Static AST Token Scanning in Rule Engine** | The rule-based engine scans for syntax keywords (`class`, `synchronized`, `interface`) rather than executing a full language-specific compilation pass. | **Roadmap:** Incorporate tree-sitter or TypeScript compiler API AST parsers for true syntax tree traversal. |
+| **3** | **Single Code Workspace Scope** | Candidates submit their entire design inside a single multi-section markdown workspace rather than separate file tabs. | **Roadmap:** Introduce a tabbed multi-file editor while keeping the atomic evaluation bundling mechanism intact. |
+| **4** | **Language-Agnostic Lexical Parser** | While Gemini evaluates Java, C++, TypeScript, and Python seamlessly, rule-based heuristics currently skew toward OOP languages (Java/C++/TS). | **Roadmap:** Add language-specific AST grammar rules for Pythonic protocols and Go interfaces. |
+| **5** | **Cold Start Latency on Free AI Tiers** | External LLM API calls require 1.5–2.5s for deep architectural analysis on complex code submissions. | **Mitigation:** Asynchronous polling UI with animated skeleton loaders and cached evaluations via idempotency tokens. |
+
+---
+
+## 🤖 AI Usage Report
+
+In compliance with academic, open-source, and industry evaluation standards, the complete record of AI utilization is documented in **[AI_USAGE.md](AI_USAGE.md)**.
+
+### Summary of AI Integration:
+- **In-Product Core AI Engine:**
+  - Powered by **Google Gemini 2.5 Flash** (`@google/genai`) configured at `temperature: 0.1` for deterministic, low-variance architectural grading.
+  - Generates structured JSON responses conforming to the 8-criterion rubric, with verbatim **Evidence Quotes**, identified **Concerns**, and actionable **Improvement Suggestions**.
+  - **Fallback Safety:** Seamless automatic fallback to an offline heuristic analyzer if API credentials are not provided.
+- **Development & Pair-Programming Assistance:**
+  - Utilized AI assistants for rapid scaffolding of CRUD endpoints, Vitest test suites, Tailwind UI components, and Three.js shader fine-tuning.
+  - All generated code was manually inspected, type-checked, refactored, and verified against production deployment standards.
+- **Detailed Report:** Read the full [AI_USAGE.md](AI_USAGE.md) for prompts, token usage benchmarks, safety guardrails, and reflection logs.
 
 ---
 
@@ -451,66 +511,86 @@ The platform is deployed using an edge-decoupled cloud architecture:
 
 ---
 
-## 🚀 Getting Started (Local Development)
+## 💻 How to Run the Project (Local Development)
 
-### Prerequisites
-- [Node.js](https://nodejs.org/) (v18.0.0 or higher recommended)
-- `npm` or `yarn` / `pnpm`
-- *(Optional)* [Google Gemini API Key](https://aistudio.google.com/) for live AI evaluation. (If omitted, the platform automatically utilizes its high-fidelity offline heuristic engine).
+Follow these steps to set up and run **LLD_Platform** locally on your machine:
+
+### 📋 Prerequisites
+- **Node.js**: `v18.x` or `v20.x` installed ([https://nodejs.org/](https://nodejs.org/))
+- **Package Manager**: `npm` (bundled with Node.js)
+- **Git**: Installed for version control
+- *(Optional)* **Google Gemini API Key**: [Google AI Studio](https://aistudio.google.com/) (if omitted, the app runs smoothly using its offline evaluation engine)
 
 ---
 
-### Installation & Setup
+### Step-by-Step Instructions
 
-#### 1. Clone the repository
+#### 1. Clone the Repository
 ```bash
 git clone https://github.com/HarshvardhanGupta-251/LLD_Platform.git
 cd LLD_Platform
 ```
 
-#### 2. Backend Setup
-Navigate into the `backend` folder and install dependencies:
+#### 2. Configure & Run Backend
+Open a terminal in the project root:
 ```bash
+# Navigate to backend directory
 cd backend
-npm install
-```
 
-Configure your environment variables in `backend/.env`:
-```env
+# Install dependencies
+npm install
+
+# Create/verify environment configuration (.env)
+# Create a .env file with the following variables:
 PORT=5000
 DATABASE_URL="file:./dev.db"
-GEMINI_API_KEY="your-gemini-api-key-here"
-```
+GEMINI_API_KEY="" # Optional: Add your Gemini API key for live AI evaluations
 
-Initialize the database and seed the problem catalog:
-```bash
-# Push the Prisma schema to the SQLite database
+# Push Prisma schema to create local SQLite database
 npm run prisma:db-push
 
-# Seed the database with standard LLD problems
+# Seed database with standard LLD problems (Parking Lot, Elevator, etc.)
 npm run seed
-```
 
-Start the backend development server:
-```bash
+# Start the backend development server (with ts-node-dev hot reload)
 npm run dev
 ```
-The backend API server will run at: `http://localhost:5000`
+> 🩺 **Verify Backend:** Open `http://localhost:5000/health` in your browser. You should receive `{"status":"ok", "timestamp":"..."}`.
+
+#### 3. Configure & Run Frontend
+Open a **second** terminal window in the project root:
+```bash
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start the Vite development server
+npm run dev
+```
+> 🚀 **Open Platform:** Navigate to `http://localhost:5173` in your browser. The platform is now fully running with interactive WebGL background effects, problem catalog, live workspace, and evaluation engines!
+
+#### 4. Running the Entire Application (One Command from Root)
+From the root directory, you can also run:
+```bash
+# Install root orchestration dependencies
+npm install
+
+# Run backend and frontend concurrently
+npm run dev
+```
 
 ---
 
-#### 3. Frontend Setup
-In a new terminal window, navigate into the `frontend` folder:
-```bash
-cd frontend
-npm install
-```
+### 🧪 Running Tests
 
-Start the Vite development server:
+Verify backend architecture, idempotency rules, and state machine integrity:
 ```bash
-npm run dev
+cd backend
+npm test
 ```
-The frontend application will run at: `http://localhost:5173` (or port configured by Vite).
+All Vitest integration suites will execute against local SQLite test contexts.
 
 ---
 
