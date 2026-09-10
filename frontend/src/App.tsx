@@ -23,20 +23,27 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen text-slate-100 flex flex-col font-sans relative overflow-x-hidden" style={{ backgroundColor: '#0d0d14' }}>
+    <div className="min-h-screen text-slate-100 flex flex-col font-sans relative overflow-x-hidden" style={{ backgroundColor: '#13091f' }}>
       {/* React Bits GridScan WebGL Background */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <GridScan
           sensitivity={0.55}
-          lineThickness={1}
-          linesColor="#2F293A"
-          gridScale={0.1}
-          scanColor="#FF9FFC"
-          scanOpacity={0.4}
+          lineThickness={1.2}
+          linesColor="#4a2a6b"
+          gridScale={0.12}
+          scanColor="#cc44ff"
+          scanOpacity={0.55}
           enablePost
-          bloomIntensity={0.6}
-          chromaticAberration={0.002}
-          noiseIntensity={0.01}
+          bloomIntensity={1.2}
+          bloomThreshold={0}
+          bloomSmoothing={0.4}
+          chromaticAberration={0.006}
+          noiseIntensity={0.015}
+          scanGlow={1.4}
+          scanSoftness={2.5}
+          scanDuration={2.5}
+          scanDelay={1.0}
+          scanDirection="forward"
         />
       </div>
 
