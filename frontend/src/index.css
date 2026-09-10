@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    background-color: #0d0d14;
+    background-color: #ffffff;
     @apply text-slate-100 font-sans antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
@@ -35,13 +35,16 @@
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: #090d16;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #1e293b;
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
