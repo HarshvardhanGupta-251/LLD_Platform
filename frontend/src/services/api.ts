@@ -72,4 +72,10 @@ export const api = {
   // Learner History
   getLearnerAttempts: (learnerId: string = 'learner-default') =>
     fetchJson<Attempt[]>(`/learners/${learnerId}/attempts`),
+
+  clearLearnerAttempts: (learnerId: string = 'learner-default') =>
+    fetchJson<{ count: number }>(`/learners/${learnerId}/attempts`, {
+      method: 'DELETE',
+    }),
 };
+

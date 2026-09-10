@@ -50,8 +50,22 @@ export async function processEvaluation(evaluationId: string): Promise<void> {
       }
     );
 
-    // Persist Evaluation Result and Criterion Scores
+    // Persist Evaluation Result and Criterion Scores (clearing old result if retry)
+    const existingResult = await prisma.evaluationResult.findUnique({
+      where: { evaluationId: evaluation.id },
+      select: { id: true },
+    });
+    if (existingResult) {
+      await prisma.criterionScore.deleteMany({
+        where: { evaluationResultId: existingResult.id },
+      });
+      await prisma.evaluationResult.delete({
+        where: { id: existingResult.id },
+      });
+    }
+
     const createdResult = await prisma.evaluationResult.create({
+
       data: {
         evaluationId: evaluation.id,
         overallSummary: resultData.overallSummary,

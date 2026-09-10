@@ -379,6 +379,7 @@ CipherSchools/
 | Method | Endpoint | Description |
 |---|---|---|
 | `GET` | `/api/learners/:id/attempts` | Retrieve complete attempt history, performance trends, and score analytics for a learner. |
+| `DELETE` | `/api/learners/:id/attempts` | Reset and purge all historical practice attempts, submissions, and evaluations for a learner. |
 
 ---
 

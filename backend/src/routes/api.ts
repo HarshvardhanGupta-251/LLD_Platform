@@ -22,5 +22,6 @@ router.post('/evaluations/:id/retry', evaluationController.retryEvaluation);
 
 // Learners
 router.get('/learners/:id/attempts', learnerController.getLearnerAttempts);
+router.delete('/learners/:id/attempts', learnerController.clearLearnerHistory);
 
 export default router;
