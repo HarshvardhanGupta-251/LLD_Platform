@@ -1,5 +1,7 @@
 # 🚀 LLD_Platform — Low-Level System Design Practice & AI Evaluation Platform
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-black?style=for-the-badge&logo=vercel&logoColor=white)](https://lld-platform-lake.vercel.app/)
+[![Live API](https://img.shields.io/badge/Live%20API-Render-46E3B7?style=for-the-badge&logo=render&logoColor=black)](https://lld-platform-1.onrender.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.3-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
@@ -9,6 +11,7 @@
 [![Google Gemini](https://img.shields.io/badge/Google%20Gemini-2.5%20Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Vitest](https://img.shields.io/badge/Vitest-2.1-6E9F18?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 An intelligent, interactive **Low-Level System Design (LLD)** platform engineered to help software developers master Object-Oriented Design (OOD), SOLID principles, design patterns, and distributed concurrency.
 
@@ -16,8 +19,21 @@ Powered by **Google Gemini 2.5 Flash** and deterministic rule rubrics, the platf
 
 ---
 
+> ### 🌐 Live Production Deployments
+>
+> | Service | Status | URL |
+> |---|---|---|
+> | 🖥️ **Frontend Web App** | ![Vercel](https://img.shields.io/badge/Vercel-Live-brightgreen) | **[https://lld-platform-lake.vercel.app/](https://lld-platform-lake.vercel.app/)** |
+> | ⚙️ **Backend API** | ![Render](https://img.shields.io/badge/Render-Live-brightgreen) | **[https://lld-platform-1.onrender.com/](https://lld-platform-1.onrender.com/)** |
+> | 🩺 **API Health Check** | ![Health](https://img.shields.io/badge/Status-200%20OK-blue) | **[https://lld-platform-1.onrender.com/health](https://lld-platform-1.onrender.com/health)** |
+> | 📚 **Problems API** | ![REST](https://img.shields.io/badge/Endpoint-/api/problems-orange) | **[https://lld-platform-1.onrender.com/api/problems](https://lld-platform-1.onrender.com/api/problems)** |
+
+---
+
 ## 📑 Table of Contents
 
+- [Live Deployments](#-live-production-deployments)
+- [Technical Documentation (PDFs)](#-technical-documentation--publications)
 - [Overview](#-overview)
 - [Key Features](#-key-features)
 - [8-Criterion Architectural Rubric](#-8-criterion-architectural-rubric)
@@ -27,9 +43,21 @@ Powered by **Google Gemini 2.5 Flash** and deterministic rule rubrics, the platf
 - [Problem Catalog](#-problem-catalog)
 - [Project Directory Structure](#-project-directory-structure)
 - [API Reference](#-api-reference)
-- [Getting Started](#-getting-started)
+- [Cloud Deployment Guide](#-cloud-deployment-guide)
+- [Getting Started (Local Development)](#-getting-started-local-development)
 - [Testing & Quality Assurance](#-testing--quality-assurance)
 - [Author & Contact](#-author--contact)
+
+---
+
+## 📄 Technical Documentation & Publications
+
+The project includes formal, publication-grade documentation for academic, pedagogical, and system design review:
+
+| Document | Format | Description |
+|---|---|---|
+| **Research Note** | [PDF](Research_Note.pdf) • [HTML](Research_Note.html) | Formal 4-page academic whitepaper detailing the automated architectural evaluation engine, the 8-criterion rubric, AST lexical scanning, Gemini 2.5 Flash schema enforcement, empirical benchmarks, and regression analysis. |
+| **Design Note** | [PDF](Design_Note.pdf) • [HTML](Design_Note.html) | Comprehensive 4-page software architecture design document detailing MVP scope, 8-stage end-to-end user flows, Prisma entity models, backend service hierarchies, and 6 core engineering trade-offs. |
 
 ---
 
@@ -46,7 +74,7 @@ While algorithmic platforms like LeetCode focus predominantly on data structures
 1. **Interactive Workspace**: A rich markdown and code editor with customizable templates and instant validation.
 2. **Multi-Engine Evaluation**: Pluggable evaluation backends (AI-driven with Gemini 2.5 Flash, deterministic rule-based, or hybrid).
 3. **Evidence-Based Grading**: Structured 1–5 scoring per criterion, backed by textual excerpts, concerns, and suggestions.
-4. **Retry & Delta Diffs**: Visual before-and-after comparisons showing score progressions across problem attempts.
+4. **Retry & Delta Diffs**: Visual before-and-after comparisons showing score progressions ($\Delta S_i = S_{i, t} - S_{i, t-1}$) across problem attempts.
 5. **Session History & Rubric Analytics**: Longitudinal trend tracking to identify recurring architectural blind spots.
 
 ---
@@ -78,7 +106,7 @@ While algorithmic platforms like LeetCode focus predominantly on data structures
 ### 4. 🔄 Retry & Diff View
 - Compare the latest attempt against past submissions.
 - Visual score delta indicator (`+1.0`, `-0.5`) per criterion to quickly inspect whether changes improved decoupling, encapsulation, or concurrency.
-- Side-by-side or unified textual diff viewer.
+- Side-by-side or unified textual diff viewer with character-level highlights.
 
 ### 5. 📊 Learner Analytics & History
 - Comprehensive timeline of all practice sessions.
@@ -97,14 +125,14 @@ While algorithmic platforms like LeetCode focus predominantly on data structures
 
 Every submission is evaluated against this standardized grading framework:
 
-| # | Criterion | Focus Area | Score 1 Anchor | Score 5 Anchor |
+| # | Criterion | Focus Area | Score 1 Anchor (Deficient) | Score 5 Anchor (Exemplary) |
 |---|---|---|---|---|
-| **1** | **Requirement Understanding** | Scope, functional & non-functional bounds | Misses core requirements, invents irrelevant features, or misunderstands problem domain. | Comprehensive coverage of functional and non-functional requirements, explicit bounds, and clear constraints. |
-| **2** | **Responsibility Assignment (SRP)** | Single Responsibility Principle & entity roles | God objects handling DB, UI, state, and business logic simultaneously. | Clean SRP enforcement with single focused responsibility per entity, well-bounded contexts. |
-| **3** | **Coupling & Cohesion** | Module interdependence & internal focus | Tightly coupled monolithic design; changing one class requires cascading updates. | Loose coupling via interfaces and dependency injection; high cohesion within domain models. |
+| **1** | **Requirement Understanding** | Scope, functional & non-functional bounds | Misses core requirements, invents irrelevant features, or fundamentally misunderstands the problem goals. | Comprehensive coverage of functional and non-functional requirements, explicit bounds, and clear constraints. |
+| **2** | **Responsibility Assignment (SRP)** | Single Responsibility Principle & entity roles | God objects handling DB, UI, state, and business logic simultaneously. | Clean SRP enforcement with single focused responsibility per entity, well-bounded context. |
+| **3** | **Coupling & Cohesion** | Module interdependence & internal focus | Tightly coupled monolithic design; changing one class requires cascading updates across all classes. | Loose coupling via interfaces and dependency injection; high cohesion within domain models. |
 | **4** | **Encapsulation** | Information hiding & invariant safety | Exposes mutable public fields everywhere; external code mutates state directly. | Strict encapsulation; state mutated only via rich domain methods with invariant validation. |
 | **5** | **Abstraction & Design Patterns** | Strategic pattern application | No abstractions; excessive nested if-else/switch blocks replacing polymorphism. | Judicious design pattern selection (Strategy, State, Factory, Observer) cleanly separating concerns. |
-| **6** | **Extensibility (Open/Closed)** | Ease of adding new requirements | Rigid structure; adding features requires editing core engine execution paths. | Highly extensible; new behaviors added seamlessly via interface implementations without touching engine core. |
+| **6** | **Extensibility (Open/Closed)** | Ease of adding new requirements | Rigid structure; adding a new feature requires modifying existing core execution paths. | Highly extensible; new behaviors added seamlessly via interface implementations without touching engine core. |
 | **7** | **Edge Case & Concurrency** | Race conditions, locks, thread safety | Ignores errors, concurrency, race conditions, and invalid inputs completely. | Robust error handling, explicit thread-safety / concurrency locks, transaction boundaries, and graceful degradation. |
 | **8** | **Explanation Quality** | Rationale, design decisions, trade-offs | Sparse or incomprehensible text; no rationale provided for key architectural choices. | Crystal-clear structure, detailed design rationales, explicit trade-off analysis, and class relationship flow. |
 
@@ -116,7 +144,7 @@ Every submission is evaluated against this standardized grading framework:
 
 ```mermaid
 flowchart TD
-    subgraph Frontend["Frontend (React 18 + Vite + Tailwind)"]
+    subgraph Frontend["Frontend (React 18 + Vite + Tailwind) — Deployed on Vercel"]
         UI["Modern UI / Pages"]
         PS["PixelSnow WebGL Background"]
         PC["PixelCard Interactive Components"]
@@ -125,7 +153,7 @@ flowchart TD
         HT["History & Analytics Charts"]
     end
 
-    subgraph Backend["Backend (Node.js + Express + TypeScript)"]
+    subgraph Backend["Backend (Node.js + Express + TypeScript) — Deployed on Render"]
         Router["Express REST API Router (/api)"]
         subgraph Controllers
             PCtrl["Problem Controller"]
@@ -148,7 +176,7 @@ flowchart TD
     end
 
     subgraph Database["Persistence Layer (Prisma ORM)"]
-        SQLite[("SQLite Database")]
+        SQLite[("SQLite (Local) / PostgreSQL (Neon Production)")]
     end
 
     UI --> Router
@@ -168,6 +196,7 @@ flowchart TD
 3. **State Pattern**: Evaluator progress transitions deterministically through states (`Queued` → `Evaluating` → `Completed` | `Failed`).
 4. **Idempotency Pattern**: Submissions accept an `idempotencyKey` to guarantee that network retries or repeated button presses do not create duplicate evaluation runs or corrupt history.
 5. **Repository / ORM Pattern**: Prisma client abstracts all database queries with type safety, cascades, and migrations.
+6. **Submission Immutability**: Submissions are strictly write-once; historical records cannot be overwritten post-creation.
 
 ---
 
@@ -246,18 +275,20 @@ erDiagram
 
 ### Frontend
 - **Framework**: [React 18](https://react.dev/) + [Vite 5](https://vitejs.dev/)
+- **Hosting**: [Vercel](https://vercel.com/) (Edge Global CDN)
 - **Language**: [TypeScript 5](https://www.typescriptlang.org/)
 - **Styling**: [Tailwind CSS 3](https://tailwindcss.com/)
 - **Graphics & 3D**: [Three.js](https://threejs.org/) + [OGL](https://github.com/oframe/ogl) + [GSAP](https://greensock.com/)
 - **Icons**: [Lucide React](https://lucide.dev/) + [React Icons](https://react-icons.github.io/react-icons/)
-- **Component Utilities**: `clsx`, `tailwind-merge`
+- **Utilities**: `clsx`, `tailwind-merge`
 
 ### Backend
-- **Runtime**: [Node.js](https://nodejs.org/) (v18+ or v20+)
+- **Runtime**: [Node.js 20.x](https://nodejs.org/)
+- **Hosting**: [Render](https://render.com/) (Web Service)
 - **Framework**: [Express 4.21](https://expressjs.com/)
 - **Language**: [TypeScript 5](https://www.typescriptlang.org/) with `ts-node-dev`
 - **ORM**: [Prisma ORM 5.22](https://www.prisma.io/)
-- **Database**: [SQLite](https://www.sqlite.org/) (zero-config, self-contained)
+- **Database**: [SQLite](https://www.sqlite.org/) (Local Dev) / [Neon Serverless PostgreSQL](https://neon.tech/) (Production)
 - **AI Integration**: [`@google/genai`](https://www.npmjs.com/package/@google/genai) (Google Gemini 2.5 Flash)
 - **Testing**: [Vitest 2.1](https://vitest.dev/) + [Supertest 7.0](https://github.com/ladjs/supertest)
 
@@ -280,17 +311,22 @@ The platform ships pre-seeded with four classic Low-Level Design interview chall
 
 ```text
 CipherSchools/
+├── .gitignore                     # Git ignore rules (node_modules, db, env)
 ├── package.json                   # Root scripts (build, dev orchestration)
 ├── README.md                      # Comprehensive project documentation
+├── Research_Note.pdf              # 4-page academic research whitepaper
+├── Research_Note.html             # Source HTML for research paper
+├── Design_Note.pdf                # 4-page system architecture design note
+├── Design_Note.html               # Source HTML for design note
 ├── backend/                       # Express + Prisma + Gemini Backend
 │   ├── .env                       # Environment configuration
 │   ├── package.json               # Backend dependencies & scripts
-│   ├── tsconfig.json              # Backend TypeScript configuration
-│   ├── vitest.config.ts           # Vitest configuration
+│   ├── tsconfig.json              # Backend TypeScript configuration (src only)
+│   ├── vitest.config.ts           # Vitest test runner configuration
 │   ├── prisma/
 │   │   ├── schema.prisma          # Database schema & entity models
 │   │   ├── seed.ts                # Database seeder (LLD problems)
-│   │   └── dev.db                 # SQLite database file
+│   │   └── dev.db                 # Local SQLite database file
 │   ├── src/
 │   │   ├── app.ts                 # Express application configuration & CORS
 │   │   ├── server.ts              # Server startup & port binding
@@ -310,13 +346,16 @@ CipherSchools/
 │   │   │   ├── RuleBasedEvaluator.ts # Deterministic keyword/AST checks
 │   │   │   └── HybridEvaluator.ts # Combined evaluation engine
 │   │   └── services/
+│   │       ├── attemptService.ts        # Attempt & history business logic
+│   │       ├── submissionService.ts     # Submission processing
 │   │       ├── evaluationService.ts     # Evaluation pipeline execution
 │   │       └── prisma.ts          # Shared Prisma client instance
 │   └── tests/                     # Automated Vitest test suite
 │       ├── idempotency.test.ts            # Idempotency key verification
 │       ├── stateMachine.test.ts           # Evaluation state lifecycle
 │       ├── submissionImmutability.test.ts # Immutability compliance
-│       └── evaluatorFailure.test.ts       # Fault tolerance & error handling
+│       ├── evaluatorFailure.test.ts       # Fault tolerance & error handling
+│       └── clearHistory.test.ts           # History purge verification
 │
 └── frontend/                      # React + Vite + Tailwind Frontend
     ├── package.json               # Frontend dependencies
@@ -330,7 +369,7 @@ CipherSchools/
         ├── index.css              # Global styles & Tailwind directives
         ├── types/                 # Frontend TypeScript interfaces
         ├── services/
-        │   └── api.ts             # Typed API client
+        │   └── api.ts             # Typed API client with dynamic VITE_API_URL
         ├── pages/
         │   ├── ProblemsPage.tsx   # Catalog & hero with difficulty cards
         │   ├── ProblemDetailPage.tsx # Problem specs, workspace, evaluation
@@ -351,10 +390,11 @@ CipherSchools/
 
 ## 🔌 API Reference
 
-### Problem Endpoints
+### Health & Problem Endpoints
 
 | Method | Endpoint | Description |
 |---|---|---|
+| `GET` | `/health` | Server health check; returns status and current timestamp. |
 | `GET` | `/api/problems` | List all available LLD practice problems. |
 | `GET` | `/api/problems/:id` | Fetch full details, requirements, and constraints for a problem. |
 
@@ -383,12 +423,40 @@ CipherSchools/
 
 ---
 
-## 🚀 Getting Started
+## ☁️ Cloud Deployment Guide
+
+The platform is deployed using an edge-decoupled cloud architecture:
+
+### 1. Backend Deployment (Render)
+- **Service Type:** Web Service
+- **Root Directory:** `backend`
+- **Environment:** `Node`
+- **Build Command:**
+  ```bash
+  npm install && npx prisma generate && npx prisma db push && npm run seed && npm run build
+  ```
+- **Start Command:** `npm start`
+- **Environment Variables:**
+  - `DATABASE_URL`: Connection string (SQLite `file:./dev.db` or Neon PostgreSQL)
+  - `GEMINI_API_KEY`: Google Gemini API key
+  - `NODE_ENV`: `production`
+
+### 2. Frontend Deployment (Vercel)
+- **Framework Preset:** `Vite`
+- **Root Directory:** `frontend`
+- **Build Command:** `npm run build` (`tsc && vite build`)
+- **Output Directory:** `dist`
+- **Environment Variables:**
+  - `VITE_API_URL`: `https://lld-platform-1.onrender.com/api`
+
+---
+
+## 🚀 Getting Started (Local Development)
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (v18.0.0 or higher recommended)
 - `npm` or `yarn` / `pnpm`
-- *(Optional)* [Google Gemini API Key](https://aistudio.google.com/) for live AI evaluation. (If omitted, the platform automatically utilizes its high-fidelity heuristic engine).
+- *(Optional)* [Google Gemini API Key](https://aistudio.google.com/) for live AI evaluation. (If omitted, the platform automatically utilizes its high-fidelity offline heuristic engine).
 
 ---
 
@@ -442,7 +510,7 @@ Start the Vite development server:
 ```bash
 npm run dev
 ```
-The frontend application will run at: `http://localhost:5173`
+The frontend application will run at: `http://localhost:5173` (or port configured by Vite).
 
 ---
 
@@ -460,6 +528,7 @@ npm test
 2. **State Machine (`stateMachine.test.ts`)**: Asserts correct transitions through the evaluation lifecycle (`Queued` → `Evaluating` → `Completed`).
 3. **Submission Immutability (`submissionImmutability.test.ts`)**: Enforces that submitted code/text cannot be overwritten or mutated post-evaluation.
 4. **Fault Tolerance (`evaluatorFailure.test.ts`)**: Verifies graceful error capture, status marking (`Failed`), and manual retry capability upon unexpected evaluator faults.
+5. **History Reset (`clearHistory.test.ts`)**: Tests atomic deletion cascading across attempts, submissions, evaluations, and criterion scores.
 
 ---
 
@@ -467,6 +536,7 @@ npm test
 
 **Harshvardhan Gupta**
 
+- 🌐 **Live Platform**: [https://lld-platform-lake.vercel.app/](https://lld-platform-lake.vercel.app/)
 - 🌐 **GitHub Profile**: [@HarshvardhanGupta-251](https://github.com/HarshvardhanGupta-251)
 - 📦 **Repository**: [LLD_Platform](https://github.com/HarshvardhanGupta-251/LLD_Platform)
 - 📧 **Email**: [harshvardhangupta751@gmail.com](mailto:harshvardhangupta751@gmail.com)
